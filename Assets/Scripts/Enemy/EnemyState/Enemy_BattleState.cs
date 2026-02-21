@@ -10,29 +10,25 @@ public class Enemy_BattleState : EnemyState
     }
 
     private Transform player;
-    private float battleDuration = 3;
-    private float lastTime;
+
+
+    private float lastTime;             // 进战游戏时间
+    private float battleDuration = 3;   // 脱战倒计时
 
     public override void Enter()
     {
         base.Enter();
 
-        var hit = enemy.CheckPlayer();
-
-        if (hit.collider != null)
-        {
-            player = hit.transform;
-            lastTime = Time.time;
-        }
-        else
-        {
-            stateMachine.ChangeState(enemy.idleState);
-            return;
-        }
+        lastTime = Time.time;
 
         anim.SetFloat("battleAnimMultiplier", enemy.battleMoveSpeed / enemy.moveSpeed);
 
-        CheckRetreat();
+        // 如果玩家离得太近就后撤一下
+        if (DistanceToPlayer() < enemy.retreatDistance)
+        {
+            enemy.CheckFlip(DirToPlayer());
+            enemy.SetVelocity(enemy.retreatForce.x * -DirToPlayer(), enemy.retreatForce.y);
+        }
     }
 
 
@@ -40,22 +36,27 @@ public class Enemy_BattleState : EnemyState
     {
         base.Update();
 
-        if (enemy.CheckPlayer())
+        // 持续检测目标
+        if (enemy.TryGetPlayerHit(out var hit))
         {
+            // player = hit.transform; // 持续刷新目标
             lastTime = Time.time;
         }
 
-        if (IsOver())
+        // 目标脱离时间过长，切回idle
+        if (enemy.gameTime > lastTime + battleDuration)
         {
             stateMachine.ChangeState(enemy.idleState);
         }
 
-        if (WithInAttackRange() && enemy.CheckPlayer())
+        // 在攻击范围内并且可以检测到玩家则发起攻击
+        if (DistanceToPlayer() < enemy.attackDistance && enemy.TryGetPlayerHit(out hit))
         {
             stateMachine.ChangeState(enemy.attackState);
         }
         else
         {
+            // 若不满足，则触发追踪逻辑
             enemy.CheckFlip(DirToPlayer());
             enemy.SetVelocity(enemy.battleMoveSpeed * DirToPlayer(), rb.velocity.y);
         }
@@ -75,16 +76,9 @@ public class Enemy_BattleState : EnemyState
         return player.position.x > enemy.transform.position.x ? 1 : -1;
     }
 
-    private void CheckRetreat()
-    {
-        if (DistanceToPlayer() < enemy.retreatDistance)
-        {
-            enemy.CheckFlip(DirToPlayer());
-            enemy.SetVelocity(enemy.retreatForce.x * -DirToPlayer(), enemy.retreatForce.y);
-        }
-    }
-
-    private bool IsOver() => enemy.gameTime > lastTime + battleDuration;
-
-    private bool WithInAttackRange() => DistanceToPlayer() < enemy.attackDistance;
+    /// <summary>
+    /// 方法：可以在外部设置目标
+    /// </summary>
+    /// <param name="target"></param>
+    public void SetTarget(Transform target) => player = target;
 }

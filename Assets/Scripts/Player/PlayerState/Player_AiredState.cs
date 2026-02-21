@@ -12,6 +12,7 @@ public class Player_AiredState : PlayerState
     {
         base.Update();
 
+        // 实现空中移动
         if (input.moveInput.x != 0)
         {
             player.SetVelocity(input.moveInput.x * player.moveSpeed, rb.velocity.y);

@@ -9,8 +9,8 @@ public class Entity : MonoBehaviour
     public Rigidbody2D rb { get; private set; }
     public Animator anim { get; private set; }
 
-    private bool facingRight = true;
-    public int facingDir { get; private set; } = 1;
+    private bool facingRight = true;    // 便于CheckFlip(dir)判断是否与传入方向一致
+    public int facingDir { get; private set; } = 1;     // 方便子类使用，尤其是SetVelocity的时候
 
     public bool isGround { get; private set; }
     public bool isWall { get; private set; }
@@ -54,6 +54,10 @@ public class Entity : MonoBehaviour
         rb.velocity = new Vector2(x, y);
     }
 
+    /// <summary>
+    /// 方法：判断是否需要转身
+    /// </summary>
+    /// <param name="dir">传入方向</param>
     public void CheckFlip(float dir)
     {
         if (dir < 0 && facingRight) Flip();
@@ -68,7 +72,11 @@ public class Entity : MonoBehaviour
         transform.Rotate(0, 180, 0);
     }
 
-    protected virtual void OnDrawGizmos()
+    /// <summary>
+    /// 辅助开发工具：可视化判定区间
+    /// OnDrawGizmosSelected()仅在层级中选中时显示
+    /// </summary>
+    protected virtual void OnDrawGizmosSelected()
     {
         Gizmos.DrawLine(groundCheck.position, groundCheck.position + new Vector3(0, -groundCheckDistance));
         Gizmos.DrawLine(wallCheck.position, wallCheck.position + new Vector3(wallCheckDistance * facingDir, 0));

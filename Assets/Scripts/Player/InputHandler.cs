@@ -62,7 +62,7 @@ public class InputHandler : MonoBehaviour
     private void OnJump(InputAction.CallbackContext ctx)
     {
         if (ctx.started) jumpInput = true;
-        else if(ctx.canceled) jumpInput = false;
+        else if (ctx.canceled) jumpInput = false;
     }
 
     private void OnDash(InputAction.CallbackContext ctx)

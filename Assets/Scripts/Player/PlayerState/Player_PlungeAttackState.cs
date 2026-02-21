@@ -8,7 +8,7 @@ public class Player_PlungeAttackState : PlayerState
     {
     }
 
-    private bool hasGrounded;
+    private bool hasGrounded;   // 开关，或者说"锁"
 
     public override void Enter()
     {
@@ -21,8 +21,9 @@ public class Player_PlungeAttackState : PlayerState
     {
         base.Update();
 
-        if (player.isGround && hasGrounded == false)
+        if (player.isGround && !hasGrounded)
         {
+            // 下砸攻击后锁住
             hasGrounded = true;
             anim.SetTrigger("AirAttackTrigger");
             player.SetVelocity(0, rb.velocity.y);

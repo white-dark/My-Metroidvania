@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 通用战斗组件
+/// </summary>
 public class Combat : MonoBehaviour
 {
     public float damage = 10;
@@ -11,6 +14,10 @@ public class Combat : MonoBehaviour
     [SerializeField] private Transform targetCheck;
     [SerializeField] private float targetCheckRadius;
 
+    /// <summary>
+    /// 攻击触发逻辑
+    /// 在动画挥砍帧调用
+    /// </summary>
     public void AttackTrigger()
     {
         var targetColliders = Physics2D.OverlapCircleAll(targetCheck.position, targetCheckRadius, whatIsTarget);
@@ -26,7 +33,7 @@ public class Combat : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmos()
+    private void OnDrawGizmosSelected()
     {
         Gizmos.DrawWireSphere(targetCheck.position, targetCheckRadius);
     }

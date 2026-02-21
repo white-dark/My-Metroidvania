@@ -12,8 +12,10 @@ public class Enemy_GroundState : EnemyState
     {
         base.Update();
 
-        if (enemy.CheckPlayer())
+        // 检测到玩家，执行"锁定目标"+"切换状态"
+        if (enemy.TryGetPlayerHit(out var hit))
         {
+            enemy.battleState.SetTarget(hit.transform);
             stateMachine.ChangeState(enemy.battleState);
         }
     }

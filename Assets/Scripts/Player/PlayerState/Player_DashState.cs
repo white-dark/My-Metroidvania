@@ -14,19 +14,18 @@ public class Player_DashState : PlayerState
     {
         base.Enter();
 
-        stateTimer = player.dashDuration;
+        stateTimer = player.dashDuration;   // 重置dash倒计时
         player.SetVelocity(player.dashSpeed * player.facingDir, 0);
-        gravity = rb.gravityScale;
-        rb.gravityScale = 0;
+        gravity = rb.gravityScale;  // 记录当前重力
+        rb.gravityScale = 0;        // dash期间取消重力
     }
 
     public override void Update()
     {
         base.Update();
 
-        CancleDashIfNeed();
-
-        if (stateTimer < 0)
+        // Dash倒计时结束
+        if (stateTimer < 0) 
         {
             if (player.isGround)
             {
@@ -37,20 +36,11 @@ public class Player_DashState : PlayerState
                 stateMachine.ChangeState(player.fallState);
             }
         }
-    }
-    public override void Exit()
-    {
-        base.Exit();
 
-        player.SetVelocity(rb.velocity.x / 2, rb.velocity.y);
-        rb.gravityScale = gravity;
-    }
-
-    private void CancleDashIfNeed()
-    {
+        // Dash遇到墙
         if (player.isWall)
         {
-            if(player.isGround)
+            if (player.isGround)
             {
                 stateMachine.ChangeState(player.idleState);
             }
@@ -59,5 +49,13 @@ public class Player_DashState : PlayerState
                 stateMachine.ChangeState(player.wallSlideState);
             }
         }
+    }
+
+    public override void Exit()
+    {
+        base.Exit();
+
+        player.SetVelocity(rb.velocity.x / 2, rb.velocity.y);   // dash结束后缓冲一下
+        rb.gravityScale = gravity;  // 重力回归
     }
 }
