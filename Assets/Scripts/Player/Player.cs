@@ -1,8 +1,10 @@
+using System;
 using UnityEditor.Tilemaps;
 using UnityEngine;
 
 public class Player : Entity
 {
+    public static event Action OnPlayerDeath;
     public InputHandler input { get; private set; }
 
     public Player_IdleState idleState { get; private set; }
@@ -14,6 +16,7 @@ public class Player : Entity
     public Player_DashState dashState { get; private set; }
     public Player_BasicAttackState basicAttackState { get; private set; }
     public Player_PlungeAttackState plungeAttackState { get; private set; }
+    public Player_DeathState deathState { get; private set; }
 
     [Header("Move Details")]
     public float moveSpeed;
@@ -43,6 +46,7 @@ public class Player : Entity
         dashState = new Player_DashState(this, stateMachine, "dash");
         basicAttackState = new Player_BasicAttackState(this, stateMachine, "basicAttack");
         plungeAttackState = new Player_PlungeAttackState(this, stateMachine, "AirAttack");
+        deathState = new Player_DeathState(this, stateMachine, "death");
     }
 
     protected override void Start()
@@ -50,5 +54,13 @@ public class Player : Entity
         base.Start();
 
         stateMachine.Initialize(idleState);
+    }
+
+    public override void EntityDeath()
+    {
+        base.EntityDeath();
+
+        OnPlayerDeath?.Invoke();
+        stateMachine.ChangeState(deathState);
     }
 }

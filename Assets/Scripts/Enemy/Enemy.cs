@@ -5,12 +5,11 @@ using UnityEngine;
 
 public class Enemy : Entity
 {
-    private Health health;
-
     public Enemy_IdleState idleState;
     public Enemy_MoveState moveState;
     public Enemy_AttackState attackState;
     public Enemy_BattleState battleState;
+    public Enemy_DeathState deathState;
 
     [HideInInspector] public float gameTime;
 
@@ -34,7 +33,18 @@ public class Enemy : Entity
     {
         base.Awake();
 
-        health = GetComponent<Health>();
+        idleState = new Enemy_IdleState(this, stateMachine, "idle");
+        moveState = new Enemy_MoveState(this, stateMachine, "move");
+        attackState = new Enemy_AttackState(this, stateMachine, "attack");
+        battleState = new Enemy_BattleState(this, stateMachine, "battle");
+        deathState = new Enemy_DeathState(this, stateMachine, "idle");
+    }
+
+    protected override void Start()
+    {
+        base.Start();
+
+        stateMachine.Initialize(idleState);
     }
 
     protected override void Update()
@@ -46,42 +56,24 @@ public class Enemy : Entity
 
     private void OnEnable()
     {
-        health.OnHit += ReactToHit;    // 向发布者订阅，即挂载到OnHit下
+        Player.OnPlayerDeath += ReactToPlayerDeath;
     }
 
     private void OnDisable()
     {
-        health.OnHit -= ReactToHit;    // 通俗的说，离职时擦掉电话号码，公司就再也不找你了
+        Player.OnPlayerDeath -= ReactToPlayerDeath;
     }
 
-    /// <summary>
-    /// 回调方法：响应受击并反击
-    /// </summary>
-    /// <param name="attacker"></param>
-    private void ReactToHit(Transform attacker)
+    private void ReactToPlayerDeath()
     {
-        float dirToAttacker = attacker.position.x - transform.position.x;
-
-        CheckFlip(dirToAttacker);
-
-        // 进战前锁定目标
-        if(stateMachine.currentState != battleState)
-        {
-            battleState.SetTarget(attacker);
-            stateMachine.ChangeState(battleState);
-        }
+        stateMachine.ChangeState(idleState);
     }
 
-    protected override void OnDrawGizmosSelected()
+    public override void EntityDeath()
     {
-        base.OnDrawGizmosSelected();
+        base.EntityDeath();
 
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawLine(playerCheck.position, playerCheck.position + new Vector3(playerCheckDistance * facingDir, 0));
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(playerCheck.position, playerCheck.position + new Vector3(attackDistance * facingDir, 0));
-        Gizmos.color = Color.green;
-        Gizmos.DrawLine(playerCheck.position, playerCheck.position + new Vector3(retreatDistance * facingDir, 0));
+        stateMachine.ChangeState(deathState);
     }
 
     /// <summary>
@@ -102,6 +94,18 @@ public class Enemy : Entity
         // 否则返回空报告
         hit = default;
         return false;
+    }
+
+    protected override void OnDrawGizmosSelected()
+    {
+        base.OnDrawGizmosSelected();
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(playerCheck.position, playerCheck.position + new Vector3(playerCheckDistance * facingDir, 0));
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(playerCheck.position, playerCheck.position + new Vector3(attackDistance * facingDir, 0));
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(playerCheck.position, playerCheck.position + new Vector3(retreatDistance * facingDir, 0));
     }
 }
 

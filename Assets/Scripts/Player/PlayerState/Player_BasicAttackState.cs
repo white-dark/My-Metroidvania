@@ -9,7 +9,7 @@ public class Player_BasicAttackState : PlayerState
     }
 
     private float attackDir;
-    private float[] attackOffset => player.attackOffset;
+    private float[] attackOffset => player.attackOffset;    // 攻击动作的位移
 
     private int comboCounter;       // 攻击段数
     private int comboStart = 0;

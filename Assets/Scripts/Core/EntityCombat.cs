@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// 通用战斗组件
 /// </summary>
-public class Combat : MonoBehaviour
+public class EntityCombat : MonoBehaviour
 {
     public float damage = 10;
 
@@ -24,11 +24,11 @@ public class Combat : MonoBehaviour
 
         foreach (var tar in targetColliders)
         {
-            var enemyHealth = tar.GetComponent<Health>();
+            IDamageable damageable = tar.GetComponent<IDamageable>();   // 能受伤的就能检测
 
-            if(enemyHealth != null)
+            if(damageable != null)
             {
-                enemyHealth.TakeDamage(damage, transform);
+                damageable.TakeDamage(damage, transform);
             }
         }
     }

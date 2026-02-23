@@ -50,6 +50,9 @@ TagManager:
   - name: Player
     uniqueID: 3635453945
     locked: 0
+  - name: Chest
+    uniqueID: 971638415
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0

@@ -5,7 +5,7 @@ using static UnityEngine.EventSystems.EventTrigger;
 
 public class Entity : MonoBehaviour
 {
-    protected StateMachine stateMachine;
+    public StateMachine stateMachine;
     public Rigidbody2D rb { get; private set; }
     public Animator anim { get; private set; }
 
@@ -14,6 +14,9 @@ public class Entity : MonoBehaviour
 
     public bool isGround { get; private set; }
     public bool isWall { get; private set; }
+    public bool isKnocked { get; private set; }
+
+    private Coroutine knockbackCo;
 
     [Header("Check Details")]
     [SerializeField] protected LayerMask whatIsGround;
@@ -32,7 +35,7 @@ public class Entity : MonoBehaviour
 
     protected virtual void Start()
     {
-        
+
     }
 
     protected virtual void Update()
@@ -45,6 +48,33 @@ public class Entity : MonoBehaviour
     protected virtual void FixedUpdate()
     {
         stateMachine.currentState.PhysicsUpdate();
+    }
+
+    public virtual void EntityDeath()
+    {
+
+    }
+    
+    public void ReceiveKnockback(Vector2 knockback, float duration)
+    {
+        if (knockbackCo != null)
+        {
+            StopCoroutine(knockbackCo); // 如果有工人，让他停下
+        }
+        knockbackCo = StartCoroutine(KnockbackRoutine(knockback, duration));
+    }
+
+    private IEnumerator KnockbackRoutine(Vector2 knockback, float duration)
+    {
+        isKnocked = true;
+        rb.velocity = knockback;
+
+        yield return new WaitForSeconds(duration);
+
+        rb.velocity = Vector2.zero;
+        isKnocked = false;
+
+        knockbackCo = null; // 活干完了记得撕票
     }
 
     public void AnimationFinishTrigger() => stateMachine.currentState.AnimationFinishTrigger();

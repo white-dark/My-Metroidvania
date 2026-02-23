@@ -5,12 +5,12 @@ using UnityEngine;
 public class AnimationTrigger : MonoBehaviour
 {
     private Entity entity;
-    private Combat combat;
+    private EntityCombat combat;
 
     private void Awake()
     {
         entity = GetComponentInParent<Entity>();
-        combat = GetComponentInParent<Combat>();
+        combat = GetComponentInParent<EntityCombat>();
     }
 
     private void AnimationFinishTrigger() => entity.AnimationFinishTrigger();
