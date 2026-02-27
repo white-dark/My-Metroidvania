@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyHealth : EntityHealth
+public class Enemy_Health : Entity_Health
 {
     private Enemy enemy => GetComponent<Enemy>();
 

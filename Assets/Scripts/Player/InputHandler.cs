@@ -9,6 +9,7 @@ public class InputHandler : MonoBehaviour
     public bool jumpInput {  get; private set; }
     public bool dashInput {  get; private set; }
     public bool attackInput {  get; private set; }
+    public bool counterAttackInput { get; private set; }
 
     private void Awake()
     {
@@ -31,6 +32,9 @@ public class InputHandler : MonoBehaviour
         input.Player.Attack.started += OnAttack;
         input.Player.Attack.canceled += OnAttack;
 
+        input.Player.CounterAttack.started += OnCounterAttack;
+        input.Player.CounterAttack.canceled += OnCounterAttack;
+
     }
 
     private void OnDisable()
@@ -47,12 +51,16 @@ public class InputHandler : MonoBehaviour
         input.Player.Attack.started -= OnAttack;
         input.Player.Attack.canceled -= OnAttack;
 
+        input.Player.CounterAttack.started -= OnCounterAttack;
+        input.Player.CounterAttack.canceled -= OnCounterAttack;
+
         input.Disable();
     }
 
     public void UseJumpInput() => jumpInput = false;
     public void UseDashInput() => dashInput = false;
     public void UseAttackInput() => attackInput = false;
+    public void UseCounterAttackInput() => counterAttackInput = false;
 
     private void OnMove(InputAction.CallbackContext ctx)
     {
@@ -75,5 +83,11 @@ public class InputHandler : MonoBehaviour
     {
         if (ctx.started) attackInput = true;
         else if (ctx.canceled) attackInput = false;
+    }
+
+    private void OnCounterAttack(InputAction.CallbackContext ctx)
+    {
+        if (ctx.started) counterAttackInput = true;
+        else if (ctx.canceled) counterAttackInput = false;
     }
 }

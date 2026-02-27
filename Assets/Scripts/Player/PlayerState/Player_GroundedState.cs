@@ -34,5 +34,11 @@ public class Player_GroundedState : PlayerState
             input.UseAttackInput();
             stateMachine.ChangeState(player.basicAttackState);
         }
+
+        if (input.counterAttackInput)
+        {
+            input.UseCounterAttackInput();
+            stateMachine.ChangeState(player.counterAttackState);
+        }
     }
 }

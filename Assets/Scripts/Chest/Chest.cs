@@ -6,7 +6,7 @@ public class Chest : MonoBehaviour, IDamageable
 {
     private Animator anim => GetComponentInChildren<Animator>();
     private Rigidbody2D rb => GetComponent<Rigidbody2D>();
-    private EntityVisual visual => GetComponent<EntityVisual>();
+    private Entity_Visual visual => GetComponent<Entity_Visual>();
 
     [Header("Jump Settings")]
     [SerializeField] private Vector2 popForce = new Vector2(1, 4); // µ¯ÌøµÄÁ¦¶È

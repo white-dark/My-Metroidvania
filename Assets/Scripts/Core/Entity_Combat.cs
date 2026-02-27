@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// 通用战斗组件
 /// </summary>
-public class EntityCombat : MonoBehaviour
+public class Entity_Combat : MonoBehaviour
 {
     public float damage = 10;
 
@@ -18,19 +18,22 @@ public class EntityCombat : MonoBehaviour
     /// 攻击触发逻辑
     /// 在动画挥砍帧调用
     /// </summary>
-    public void AttackTrigger()
+    public void PerformAttack()
     {
-        var targetColliders = Physics2D.OverlapCircleAll(targetCheck.position, targetCheckRadius, whatIsTarget);
-
-        foreach (var tar in targetColliders)
+        foreach (var tar in GetDetectedColliders())
         {
             IDamageable damageable = tar.GetComponent<IDamageable>();   // 能受伤的就能检测
 
-            if(damageable != null)
+            if (damageable != null)
             {
                 damageable.TakeDamage(damage, transform);
             }
         }
+    }
+
+    protected Collider2D[] GetDetectedColliders()
+    {
+        return Physics2D.OverlapCircleAll(targetCheck.position, targetCheckRadius, whatIsTarget);
     }
 
     private void OnDrawGizmosSelected()

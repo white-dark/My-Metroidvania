@@ -6,12 +6,12 @@ using UnityEngine;
 /// 通用生命值组件
 /// 采用观察者模式实现受击反馈
 /// </summary>
-public class EntityHealth : MonoBehaviour, IDamageable
+public class Entity_Health : MonoBehaviour, IDamageable
 {
     public System.Action<Transform> OnHit;  // "委托"，俗称广播
 
     private Entity entity;
-    private EntityVisual virsual;
+    private Entity_Visual virsual;
 
     [Header("Health Details")]
     [SerializeField] protected float maxHp = 100;
@@ -27,7 +27,7 @@ public class EntityHealth : MonoBehaviour, IDamageable
     protected virtual void Awake()
     {
         entity = GetComponent<Entity>();
-        virsual = GetComponent<EntityVisual>();
+        virsual = GetComponent<Entity_Visual>();
 
         currentHp = maxHp;
     }

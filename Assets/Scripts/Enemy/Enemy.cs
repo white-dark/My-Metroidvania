@@ -10,6 +10,7 @@ public class Enemy : Entity
     public Enemy_AttackState attackState;
     public Enemy_BattleState battleState;
     public Enemy_DeathState deathState;
+    public Enemy_StunnedState stunnedState;
 
     [HideInInspector] public float gameTime;
 
@@ -24,21 +25,15 @@ public class Enemy : Entity
     public Vector2 retreatForce;
     [HideInInspector] public float battleAnimMultiplier;
 
+    [Header("Stunned Details")]
+    public float stunnedDuration = .8f;
+    public Vector2 stunnedForce = new Vector2(6, 6);
+    protected bool canBeCountered;
+
     [Header("Player Check")]
     public LayerMask whatIsPlayer;
     public Transform playerCheck;
     public float playerCheckDistance;
-
-    protected override void Awake()
-    {
-        base.Awake();
-
-        idleState = new Enemy_IdleState(this, stateMachine, "idle");
-        moveState = new Enemy_MoveState(this, stateMachine, "move");
-        attackState = new Enemy_AttackState(this, stateMachine, "attack");
-        battleState = new Enemy_BattleState(this, stateMachine, "battle");
-        deathState = new Enemy_DeathState(this, stateMachine, "idle");
-    }
 
     protected override void Start()
     {
@@ -53,6 +48,8 @@ public class Enemy : Entity
 
         gameTime = Time.time;   // 记录游戏时间，便于脱战计时 
     }
+
+    public void SetCounterable(bool enable) => canBeCountered = enable;
 
     private void OnEnable()
     {

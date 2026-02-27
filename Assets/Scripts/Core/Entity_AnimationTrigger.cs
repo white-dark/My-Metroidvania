@@ -2,18 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AnimationTrigger : MonoBehaviour
+public class Entity_AnimationTrigger : MonoBehaviour
 {
     private Entity entity;
-    private EntityCombat combat;
+    private Entity_Combat combat;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         entity = GetComponentInParent<Entity>();
-        combat = GetComponentInParent<EntityCombat>();
+        combat = GetComponentInParent<Entity_Combat>();
     }
 
     private void AnimationFinishTrigger() => entity.AnimationFinishTrigger();
 
-    private void AttackTrigger() => combat.AttackTrigger();
+    private void AttackTrigger() => combat.PerformAttack();
 }

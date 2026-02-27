@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EntityVisual : MonoBehaviour
+public class Entity_Visual : MonoBehaviour
 {
     private SpriteRenderer sr;
 
@@ -11,7 +11,7 @@ public class EntityVisual : MonoBehaviour
     [SerializeField] Material flashMaterial;
     private Material defaultMaterial;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         sr = GetComponentInChildren<SpriteRenderer>();
 
